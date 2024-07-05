@@ -17,7 +17,7 @@ function Attendance() {
     const faceDescriptors = [];
     let descriptors = [];
     const data = await axios.get(
-      process.env.REACT_APP_API +"/api/staffs"
+      "http://localhost:5227/api/staffs"
     );
     const dataFace = data.data.content;
     //console.log(dataFace.length);
@@ -79,7 +79,7 @@ function Attendance() {
       await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
       //toast("load xong ssdMobilenetv1");
 
-      const trainingData = await loadFaceData();
+      const trainingData = await loadTrainingData();
       //toast("load xong du lieu khuong mat");
       //loadFaceData();
       //console.log(trainingData);
@@ -111,13 +111,13 @@ function Attendance() {
       }
       canvasRef.current.innerHTML = faceapi.createCanvasFromMedia(videoRef.current);
       const displaySize = {
-        width: videoRef.current.offsetWidth,
-        height: videoRef.current.offsetHeight
+        width: videoWitdh,
+        height: videoHeight
       }
       faceapi.matchDimensions(canvasRef.current, displaySize);
       const detections = await faceapi.detectAllFaces(videoRef.current, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
       const resizeDetections = faceapi.resizeResults(detections, displaySize);
-      canvasRef.current.getContext('2d').clearRect(0, 0, videoRef.current.offsetWidth, videoRef.current.offsetHeight);
+      canvasRef.current.getContext('2d').clearRect(0, 0, videoWitdh, videoHeight);
       faceapi.draw.drawDetections(canvasRef.current, resizeDetections);
       faceapi.draw.drawFaceLandmarks(canvasRef.current, resizeDetections);
       faceapi.draw.drawFaceExpressions(canvasRef.current, resizeDetections);
@@ -141,7 +141,7 @@ function Attendance() {
     <div className="App">
       <span>{inittializing ? 'Initializing' : 'Ready'}</span>
       <div className="display-flex justify-conten-center">
-        <video ref={videoRef} autoPlay playsInline muted onPlay={handleVideoOnPlay} />
+        <video ref={videoRef} autoPlay playsinline muted height={videoHeight} width={videoWitdh} onPlay={handleVideoOnPlay} />
         <canvas ref={canvasRef} className="position-absolute"></canvas>
       </div>
 
